@@ -1,0 +1,25 @@
+Package: TUNAVERSE
+Title: Tunas Undergoing Numerical Assessment - Validation, Estimation, Research, Statistics, and Evaluation of Atlantic swordfish, Atlantic Bluefin tuna, other tunas and bycatch species
+Version: 2024.07.08
+Authors@R: c( person("Mike", "McMahon", email="Mike.McMahon@dfo-mpo.gc.ca", role=c("aut", "cre")) )
+Maintainer: Mike McMahon <Mike.McMahon@dfo-mpo.gc.ca>
+Description: This package facilitates the extraction and handling of data from various Maritimes databases.
+Depends:
+    R (>= 4.00)
+Imports:
+    dplyr,
+    lubridate,
+    rlang,
+    tidyr,
+    Mar.utils
+Enhances:
+    ROracle,
+    RODBC,
+    DBI
+Remotes:
+  Maritimes/Mar.utils
+Encoding: UTF-8
+License: MIT + file LICENSE
+LazyData: true
+URL: https://github.com/PopulationEcologyDivision/TUNAVERSE/
+RoxygenNote: 7.2.3
