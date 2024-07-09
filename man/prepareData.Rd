@@ -7,6 +7,7 @@
 prepareData(
   username = NULL,
   password = NULL,
+  dsn = NULL,
   data.dir = NULL,
   usepkg = "rodbc",
   force.extract = F
@@ -16,6 +17,8 @@ prepareData(
 \item{username}{default is \code{NULL} This is your username for accessing oracle objects.}
 
 \item{password}{default is \code{NULL} This is your password for accessing oracle objects.}
+
+\item{dsn}{default is \code{NULL} This is your data source name - likely something like "PTRAN".}
 
 \item{data.dir}{The default is your working directory. If you are hoping to 
 load existing data, this folder should identify the folder containing your 
