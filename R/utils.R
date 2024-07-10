@@ -5,6 +5,7 @@
 #' @param tblList  this is a vector of object names necessary for the functions of TUNAVERSE to run. 
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @importFrom dplyr %>%
+#' @export
 enWidener<-function(tblList){
   #####
   tblList$LOG_EFRT_ENTRD_DETS <- tblList$LOG_EFRT_ENTRD_DETS[tblList$LOG_EFRT_ENTRD_DETS$COLUMN_DEFN_ID %in% c(479,689,559,558),c("LOG_EFRT_STD_INFO_ID","COLUMN_DEFN_ID","DATA_VALUE")]
@@ -63,6 +64,7 @@ enWidener<-function(tblList){
 #' useful for the purposes of this package. This function removes them.
 #' @param tblList  this is a vector of object names necessary for the functions of TUNAVERSE to run. 
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
+#' @export
 dropFields<-function(tblList){
   sink("nul") 
   dfList <- lapply(tblList, function(x) {
