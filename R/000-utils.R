@@ -5,7 +5,7 @@
 #' @param tblList  this is a vector of object names necessary for the functions of TUNAVERSE to run. 
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @importFrom dplyr %>%
-#' @export
+#' @noRd
 enWidener<-function(tblList){
   #####
   tblList$LOG_EFRT_ENTRD_DETS <- tblList$LOG_EFRT_ENTRD_DETS[tblList$LOG_EFRT_ENTRD_DETS$COLUMN_DEFN_ID %in% c(479,689,559,558),c("LOG_EFRT_STD_INFO_ID","COLUMN_DEFN_ID","DATA_VALUE")]
@@ -64,7 +64,7 @@ enWidener<-function(tblList){
 #' useful for the purposes of this package. This function removes them.
 #' @param tblList  this is a vector of object names necessary for the functions of TUNAVERSE to run. 
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @export
+#' @noRd
 dropFields<-function(tblList){
   sink("nul") 
   dfList <- lapply(tblList, function(x) {
@@ -82,7 +82,7 @@ dropFields<-function(tblList){
 #' @param removeOriginals default is \code{F}.  Once the specified tables have been loaded into a 
 #' list, this tells the function whether to retain or delete the original objects. 
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @export
+#' @noRd
 loadIntoList <- function(tblList, removeOriginals=F) {
   # Use mget to get all these dataframes and put them in a list
   dfList <- mget(tblList, envir = .GlobalEnv)
