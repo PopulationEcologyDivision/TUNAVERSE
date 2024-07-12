@@ -6,6 +6,7 @@
 #' the \code{data.dir}.
 #' @param username default is \code{NULL} This is your username for accessing oracle objects. 
 #' @param password default is \code{NULL} This is your password for accessing oracle objects. 
+#' @param dsn default is \code{NULL} This is your data source name - likely something like "PTRAN". 
 #' @param data.dir  The default is your working directory. If you are hoping to 
 #' load existing data, this folder should identify the folder containing your 
 #' *.rdata files.
@@ -17,10 +18,10 @@
 #' data.
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-prepareData <- function(username=NULL, password=NULL, data.dir=NULL, usepkg="rodbc", force.extract=F){
+prepareData <- function(username=NULL, password=NULL, dsn=NULL, data.dir=NULL, usepkg="rodbc", force.extract=F){
   if (is.null(data.dir))stop("Please provide a location where the extracted .rdata files can be stored and/or accessed")
   Mar.utils::get_data_tables(schema = "MARFISSCI", usepkg = usepkg,
-                             fn.oracle.username = username, fn.oracle.password = password, fn.oracle.dsn = "PTRAN",
+                             fn.oracle.username = username, fn.oracle.password = password, fn.oracle.dsn = dsn,
                              data.dir=data.dir,
                              tables= allTables, force.extract = force.extract)
   

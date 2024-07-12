@@ -2,6 +2,5 @@
 
 export(BFT_LOGS)
 export(gearByYear)
-export(loadIntoList)
 export(prepareData)
 importFrom(dplyr,"%>%")
