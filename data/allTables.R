@@ -8,4 +8,6 @@ allTables = c("MON_DOCS",
               "SLIP_SPC_STD_INFO",
               "LOG_EFRT_ENTRD_DETS",
               "MON_DOC_ENTRD_DETS",
-              "LOG_SPC_ENTRD_DETS")
+              "LOG_SPC_ENTRD_DETS",
+              "AREAS")
+#usethis::use_data(allTables, overwrite = T)
