@@ -119,12 +119,16 @@ BFT_LOGS <- function(tblList){
                 OFFLD_TRIP_dets, by="MON_DOC_ID",all.x = T)
   TRIP <- merge(TRIP, TRIP_b, by = "MON_DOC_ID", all.x = T)
   colnames(TRIP)[colnames(TRIP)=="MON_DOC_DEFN_ID"] <- "MON_DOC_DEFN_ID_TRIP"
+  TRIP<- merge(TRIP, tblList$AREAS[,c("AREA_ID", "AREA")], by.x="FV_NAFO_UNIT_AREA_ID", by.y="AREA_ID", all.x = T)
+  colnames(TRIP)[colnames(TRIP)=="AREA"] <- "nafo_unit_trip"
+  LOG<- merge(LOG, tblList$AREAS[,c("AREA_ID", "AREA")], by.x="NAFO_UNIT_AREA_ID", by.y="AREA_ID", all.x = T)
+  colnames(LOG)[colnames(LOG)=="AREA"] <- "nafo_unit_log"
   
   results <- merge(TRIP[,c("MON_DOC_ID", "MON_DOC_DEFN_ID_TRIP", "TRIP_ID", "VR_NUMBER", "Home_Mgt_Area", "Date_Sailed","Time_Sailed", 
-                           "LANDING_DATE_TIME", "COMMUNITY_CODE", "Trip_Number", "FV_NAFO_UNIT_AREA_ID", "Total_Hours_Fished", "Num_Of_Strikes", 
+                           "LANDING_DATE_TIME", "COMMUNITY_CODE", "Trip_Number", "FV_NAFO_UNIT_AREA_ID", "nafo_unit_trip", "Total_Hours_Fished", "Num_Of_Strikes", 
                            "FV_GEAR_CODE", "Hook_Size", "Num_Of_Lines", "Gauge_Of_Mono", "Bait", "Total_Num_BFT_Caught_Trip", "BFT_dressed_weight_lbs_trip", 
                            "BET_dressed_weight_lbs_trip", "YFT_dressed_weight_lbs_trip", "ALB_dressed_weight_lbs_trip")], 
-                   LOG[,c("MON_DOC_ID", "LOG_EFRT_STD_INFO_ID", "NAFO_UNIT_AREA_ID", "log_BFT_Tag_Num", "FV_FISHED_DATETIME", "Capture_Time", "latitude", "longitude", 
+                   LOG[,c("MON_DOC_ID", "LOG_EFRT_STD_INFO_ID", "NAFO_UNIT_AREA_ID", "nafo_unit_log", "log_BFT_Tag_Num", "FV_FISHED_DATETIME", "Capture_Time", "latitude", "longitude", 
                           "flank_length", "flank_length_uom", "dressed_length", "dressed_length_uom", "SSF_LANDED_FORM_CODE_LS", "BFT_LANDED_WEIGHT_LBS", 
                           "Water_Temp", "Water_Temp_UOM","gear_code")], by= "MON_DOC_ID", all.y = T)  
   return(results)
