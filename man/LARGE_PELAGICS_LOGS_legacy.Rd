@@ -4,11 +4,22 @@
 \alias{LARGE_PELAGICS_LOGS_legacy}
 \title{LARGE_PELAGICS_LOGS_legacy}
 \usage{
-LARGE_PELAGICS_LOGS_legacy(dsn = "PTRAN 64bit", uid = NULL, pwd = NULL)
+LARGE_PELAGICS_LOGS_legacy(
+  dsn = "PTRAN 64bit",
+  username = NULL,
+  password = NULL,
+  usepkg = "rodbc"
+)
 }
 \arguments{
 \item{dsn, }{this is a character vector with the DSN name configured on the 
 local computer allowing communication with the MARFIS tables.}
+
+\item{username}{default is \code{NULL}. description}
+
+\item{password}{default is \code{NULL}.}
+
+\item{usepkg}{default is \code{'rodbc'}. 'rodbc' is also a valid value.}
 }
 \description{
 This function recreates a legacy MARFIS view that is used by the

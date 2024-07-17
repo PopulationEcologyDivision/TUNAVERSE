@@ -1,9 +1,10 @@
 #' @title LP_LICENCES
 #' @description This function loads the specified licence data into the global environment.
-#' @param type  this is a one element vector identifying the licence type which is matched against a list.
-#' @param data_path  this is the location of the PLL_LICENCES, MAR_BFT_LICENCES and HP_LICENCES Rdata files.
+#' @param type  default is \code{"PLL_LICENCES"}.  Valid values include "PLL_LICENCES", "MAR_BFT_LICENCES", "HP_LICENCES".
+#' this is a one element vector identifying the licence type which is matched against a list.
+#' @param data_path  default is \code{"R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/"}. 
+#' This is the location of the PLL_LICENCES, MAR_BFT_LICENCES and HP_LICENCES Rdata files.
 #' @author  Alex Hanke, \email{Alex.Hanke@@dfo-mpo.gc.ca}
-#' @importFrom dplyr %>%
 #' @export
 LP_LICENCES <- function(type="PLL_LICENCES", 
     data_path="R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/") 
@@ -38,7 +39,7 @@ LP_LICENCES <- function(type="PLL_LICENCES",
     
     # Check if the object exists
     if (!exists(type, where = 1)) {
-      warning(paste("Object:", object_name, "not found in the data file.", sep = " "))
+      warning(paste("Object:", type, "not found in the data file.", sep = " "))
       return(invisible())  # Return invisibly if object not found
     }
     

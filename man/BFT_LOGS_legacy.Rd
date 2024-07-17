@@ -4,11 +4,22 @@
 \alias{BFT_LOGS_legacy}
 \title{BFT_LOGS_legacy}
 \usage{
-BFT_LOGS_legacy(dsn = "PTRAN 64bit", uid = NULL, pwd = NULL)
+BFT_LOGS_legacy(
+  dsn = "PTRAN 64bit",
+  username = NULL,
+  password = NULL,
+  usepkg = "rodbc"
+)
 }
 \arguments{
-\item{dsn, }{this is a character vector with the DSN name configured on the 
+\item{dsn}{default is \code{'PTRAN 64bit'},  this is a character vector with the DSN name configured on the 
 local computer allowing communication with the MARFIS tables.}
+
+\item{username}{default is \code{NULL}}
+
+\item{password}{default is \code{NULL}}
+
+\item{usepkg}{default is \code{'rodbc'}}
 }
 \description{
 This function recreates a legacy MARFIS view that was used by the
