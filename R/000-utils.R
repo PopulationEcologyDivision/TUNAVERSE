@@ -4,7 +4,7 @@
 #' retaining fields directly related to the large pelagics fishery.
 #' @param tblList  this is a vector of object names necessary for the functions of TUNAVERSE to run. 
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #' @noRd
 enWidener<-function(tblList){
   #####

@@ -3,7 +3,7 @@
 #' reformats them to imitate the MARFISSCI.BFT_LOGS view, but valid for all MON_DOC types.
 #' @param tblList  this is a vector of object names necessary for the functions of TUNAVERSE to run. 
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #' @export
 BFT_LOGS <- function(tblList){
   

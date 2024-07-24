@@ -10,7 +10,7 @@
 #' @param password default is \code{NULL}
 #' @param usepkg default is \code{'rodbc'}
 #' @author  Alex Hanke, \email{Alex.Hanke@@dfo-mpo.gc.ca}
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #' @export
 BFT_LOGS_legacy = function(dsn = "PTRAN 64bit", username=NULL,password=NULL, usepkg='rodbc') {
   channel = Mar.utils::make_oracle_cxn(usepkg = usepkg, fn.oracle.username = username, 
