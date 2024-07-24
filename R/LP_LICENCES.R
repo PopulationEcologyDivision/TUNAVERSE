@@ -33,9 +33,12 @@ LP_LICENCES <- function(type="PLL_LICENCES",
                "MAR_BFT_LICENCES.Rdata",
                "HP_LICENCES.Rdata")
     
-    data <- load(paste0(data_path,
+    load(paste0(data_path,
             RdataFiles[match(type,allowed_objects)]),
             verbose=T)
+    
+    # Return the loaded data 
+    return(get(type))
     
     # Check if the object exists
     if (!exists(type, where = 1)) {
@@ -47,7 +50,6 @@ LP_LICENCES <- function(type="PLL_LICENCES",
     assign(type, get(type, pos = 1))
     message(paste("Loaded object:", type, sep = " "))
     
-    # Return the loaded data (optional)
-    # return(get(object_name, envir = data$environment))
+
   }
   
