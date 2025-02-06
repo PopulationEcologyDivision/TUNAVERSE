@@ -4,6 +4,7 @@
 #' tblList is filtered to only 2013 records, other objects such as MON_DOCS and LOG_SPC_STD_INFO 
 #' will be filtered to ensure that only contain records that related to the remianing trips.
 #' @param tblList  this is a vector of object names necessary for the functions of TUNAVERSE to run. 
+#' @import data.table
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
 autoFilter <- function(tblList){
