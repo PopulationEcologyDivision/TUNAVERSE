@@ -4,18 +4,15 @@
 #' of the data extracted. It is recreated here for comparability purposes so that 
 #' the data used in analyses prior to 2023 can be compared with data now proided by
 #' the BFT_LOGS R function.
-#' @param dsn default is \code{'PTRAN 64bit'},  this is a character vector with the DSN name configured on the 
-#' local computer allowing communication with the MARFIS tables.
-#' @param username default is \code{NULL}
-#' @param password default is \code{NULL}
-#' @param usepkg default is \code{'rodbc'}
+#' @param cxn A valid Oracle connection object. This parameter allows you to 
+#' pass an existing connection, reducing the need to establish a new connection 
+#' within the function. If provided, it takes precedence over the connection-
+#' related parameters.
 #' @author  Alex Hanke, \email{Alex.Hanke@@dfo-mpo.gc.ca}
 #' @importFrom magrittr %>%
 #' @export
-BFT_LOGS_legacy = function(dsn = "PTRAN 64bit", username=NULL,password=NULL, usepkg='rodbc') {
-  channel = Mar.utils::make_oracle_cxn(usepkg = usepkg, fn.oracle.username = username, 
-                                       fn.oracle.password = password, 
-                                       fn.oracle.dsn = dsn)
+BFT_LOGS_legacy = function(cxn=NULL) {
+thecmd<- Mar.utils::connectionCheck(cxn)
   SQL1 <- "SELECT 
 trip.mon_doc_id, 
 trip.mon_doc_defn_id, 
@@ -141,7 +138,7 @@ le.log_efrt_std_info_id = ls.log_efrt_std_info_id(+)
 WHERE 
 trip.mon_doc_id = logs.mon_doc_id(+)"
   
-  results = channel$thecmd(channel$channel, SQL1)
+  results = thecmd(cxn, SQL1)
   
 
   return(results)

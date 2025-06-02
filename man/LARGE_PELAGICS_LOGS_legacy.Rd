@@ -4,22 +4,13 @@
 \alias{LARGE_PELAGICS_LOGS_legacy}
 \title{LARGE_PELAGICS_LOGS_legacy}
 \usage{
-LARGE_PELAGICS_LOGS_legacy(
-  dsn = "PTRAN 64bit",
-  username = NULL,
-  password = NULL,
-  usepkg = "rodbc"
-)
+LARGE_PELAGICS_LOGS_legacy(cxn = NULL)
 }
 \arguments{
-\item{dsn, }{this is a character vector with the DSN name configured on the 
-local computer allowing communication with the MARFIS tables.}
-
-\item{username}{default is \code{NULL}. description}
-
-\item{password}{default is \code{NULL}.}
-
-\item{usepkg}{default is \code{'rodbc'}. 'rodbc' is also a valid value.}
+\item{cxn}{A valid Oracle connection object. This parameter allows you to 
+pass an existing connection, reducing the need to establish a new connection 
+within the function. If provided, it takes precedence over the connection-
+related parameters.}
 }
 \description{
 This function recreates a legacy MARFIS view that is used by the

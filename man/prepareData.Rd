@@ -4,29 +4,13 @@
 \alias{prepareData}
 \title{prepareData}
 \usage{
-prepareData(
-  username = NULL,
-  password = NULL,
-  dsn = NULL,
-  data.dir = NULL,
-  usepkg = "rodbc",
-  force.extract = F
-)
+prepareData(cxn = NULL, force.extract = F)
 }
 \arguments{
-\item{username}{default is \code{NULL} This is your username for accessing oracle objects.}
-
-\item{password}{default is \code{NULL} This is your password for accessing oracle objects.}
-
-\item{dsn}{default is \code{NULL} This is your data source name - likely something like "PTRAN".}
-
-\item{data.dir}{The default is your working directory. If you are hoping to 
-load existing data, this folder should identify the folder containing your 
-*.rdata files.}
-
-\item{usepkg}{default is \code{'rodbc'}. This indicates whether the connection to Oracle should
-use \code{'rodbc'} or \code{'roracle'} to connect.  rodbc is slightly easier to setup, but
-roracle will extract data ~ 5x faster.}
+\item{cxn}{A valid Oracle connection object. This parameter allows you to 
+pass an existing connection, reducing the need to establish a new connection 
+within the function. If provided, it takes precedence over the connection-
+related parameters.}
 
 \item{force.extract}{The default value is FALSE.  By default, existing data will be loaded.  If
 \code{force.extract ==TRUE}, than a full extraction will take place, overwriting any existing
@@ -34,7 +18,7 @@ data.}
 }
 \description{
 This function extracts and/or loads data from the MARFISSCI schema into a list 
-object.  If the necessary data (i.e. .rdata files) already exists within the specified 
+object.  If the necessary data (i.e. .rdata files) already exists within C:/DFO-MPO/PESDData/Tunaverse
 \code{data.dir} (and \code{force.extract} is set to FALSE), it will load those.  If 
 \code{force.extract} is TRUE or the files don't exist, it will extract the necessry files into
 the \code{data.dir}.
