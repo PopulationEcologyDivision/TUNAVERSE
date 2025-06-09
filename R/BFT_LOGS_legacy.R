@@ -22,7 +22,7 @@ trip.vr_number,  					                                                          
 trip.home_mgt_area,  				                                                                                           -- home management area
 trip.date_sailed, 					                                                                                           -- date sailed
 trip.time_sailed, 					                                                                                           -- time sailed
-trip.landing_date_time, 				                                                                                       -- date landed
+TO_CHAR(trip.landing_date_time, 'YYYY-MM-DD HH24:MI:SS') landing_date_time, 				                                                                                       -- date landed
 trip.community_code, 		     		                                                                                       -- port landed (prov,dist,port)
 trip.trip_number, 					                                                                                           -- trip number
 (select area from marfissci.areas where area_id = (nvl(logs.nafo_unit_area_id,trip.fv_nafo_unit_area_id))) nafo_unit,  -- NAFO Area
@@ -58,7 +58,7 @@ select
 mon_doc_id, mon_doc_defn_id, trip_id, vr_number, fv_gear_code,FV_NAFO_UNIT_AREA_ID, 
 home_mgt_area, date_sailed, time_sailed, trip_number, total_hours_fished, 
 num_of_strikes,total_num_BFT_caught_trip,hook_size, num_of_lines, gauge_of_mono, bait, 
-to_date(to_char(landing_date_time,'YYYY-MON-DD'),'YYYY-MON-DD') landing_date_time, 
+TO_CHAR(landing_date_time, 'YYYY-MM-DD HH24:MI:SS') landing_date_time, 
 community_code, 
 sum(decode(ssf_species_code || ssf_species_size_code || ssf_landed_form_code || unit_of_measure_id, 2549320, weight,2549310, weight * 2.2046, 2549120,weight/1.25,2549110, weight * 2.2046/.25,null)) BFT_dressed_weight_lbs_trip,  	--  bluefin dressed weight lbs
 sum(decode(ssf_species_code || ssf_species_size_code || ssf_landed_form_code || unit_of_measure_id, 2539320, weight,2539310, weight * 2.2046,null)) BET_dressed_weight_lbs_trip,  	--  bigeye dressed weight lbs
@@ -79,7 +79,7 @@ max( decode( mdDet.COLUMN_DEFN_ID,4 , mdDet.DATA_VALUE, null)) Hook_Size, 		    
 max( decode( mdDet.COLUMN_DEFN_ID,480 , mdDet.DATA_VALUE, null)) Num_Of_Lines, 	                                      --  NUMBER OF LINES FISHED
 max( decode( mdDet.COLUMN_DEFN_ID,481 , mdDet.DATA_VALUE, null)) Gauge_Of_Mono, 	                                     --  MONOFILAMENT GUAGE
 max( decode( mdDet.COLUMN_DEFN_ID,53 , mdDet.DATA_VALUE, null)) Bait, 		                                            --  BAIT
-so.landing_date_time, 		                                                                                            -- DATE LANDED TIME LANDED
+TO_CHAR(so.landing_date_time, 'YYYY-MM-DD HH24:MI:SS') landing_date_time, 		                                                                                            -- DATE LANDED TIME LANDED
 so.community_code, 		                                                                                                 -- PORT LANDED
 ss.ssf_species_code, ss.ssf_species_size_code, ss.ssf_landed_form_code, ss.unit_of_measure_id,  
 ss.weight 
@@ -97,7 +97,7 @@ and so.slip_offld_std_info_id = sb.slip_offld_std_info_id(+)
 and sb.slip_buyr_std_info_id = ss.slip_buyr_std_info_id(+) 
 group by 
 md.mon_doc_id, md.mon_doc_defn_id, md.trip_id, md.vr_number, md.fv_gear_code,md.FV_NAFO_UNIT_AREA_ID, 
-so.landing_date_time, so.community_code, 
+TO_CHAR(so.landing_date_time, 'YYYY-MM-DD HH24:MI:SS') landing_date_time, so.community_code, 
 ss.ssf_species_code, ss.ssf_species_size_code, ss.ssf_landed_form_code, ss.unit_of_measure_id,  
 ss.weight        
 )         
@@ -105,7 +105,7 @@ group by
 mon_doc_id, mon_doc_defn_id, trip_id, vr_number, fv_gear_code,FV_NAFO_UNIT_AREA_ID, 
 Home_Mgt_Area, Date_Sailed, Time_Sailed, Trip_Number, Total_Hours_Fished, 
 Num_Of_Strikes,Total_Num_BFT_Caught_Trip,Hook_Size, Num_Of_Lines, Gauge_Of_Mono, Bait, 
-to_char(landing_date_time,'YYYY-MON-DD'), community_code       
+TO_CHAR(landing_date_time, 'YYYY-MM-DD HH24:MI:SS') , community_code       
 ) trip, 
 ( --  log  
 select 

@@ -69,7 +69,7 @@ LARGE_PELAGICS_LOGS_legacy = function(cxn=NULL) {
           SELECT
           md.trip_id, md.mon_doc_id,md.vr_number,
           (SELECT min(fishery_code) from marfissci.discard_matchfishery df where md.trip_id = df.trip_id) fishery_code, 
-          so.landing_date_time		                                                                -- DATE LANDED TIME LANDED
+          TO_CHAR(so.landing_date_time, 'YYYY-MM-DD HH24:MI:SS') landing_date_time		                                                                -- DATE LANDED TIME LANDED
           FROM
           marfissci.mon_docs md,	
           marfissci.slip_offld_std_info so 
