@@ -3,17 +3,14 @@
 #' Large Pelagics Group at SABs. This version is more robust in that it is able to 
 #' address incorrect data format issues for some fields. It is the responsibility
 #' of the analyst to find the inconsistent formats and correct them.
-#' @param dsn,  this is a character vector with the DSN name configured on the 
-#' local computer allowing communication with the MARFIS tables. 
-#' @param username default is \code{NULL}. description
-#' @param password default is \code{NULL}. 
-#' @param usepkg default is \code{'rodbc'}. 'rodbc' is also a valid value.
+#' @param cxn A valid Oracle connection object. This parameter allows you to 
+#' pass an existing connection, reducing the need to establish a new connection 
+#' within the function. If provided, it takes precedence over the connection-
+#' related parameters.
 #' @author  Alex Hanke, \email{Alex.Hanke@@dfo-mpo.gc.ca}
 #' @export
-LARGE_PELAGICS_LOGS_legacy = function(dsn = "PTRAN 64bit", username=NULL,password=NULL, usepkg="rodbc") {
-  channel = Mar.utils::make_oracle_cxn(usepkg = usepkg, fn.oracle.username = username, 
-                                       fn.oracle.password = password, 
-                                       fn.oracle.dsn = dsn)
+LARGE_PELAGICS_LOGS_legacy = function(cxn=NULL) {
+  thecmd <- Mar.utils::connectionCheck(cxn)
   SQL1 <- "SELECT trips.trip_id,
           nvl(logs.mon_doc_id,trips.mon_doc_id) MON_DOC_ID,                                           -- previously pounded out
           logs.log_efrt_std_info_id log_efrt_std_info_id,
@@ -72,7 +69,7 @@ LARGE_PELAGICS_LOGS_legacy = function(dsn = "PTRAN 64bit", username=NULL,passwor
           SELECT
           md.trip_id, md.mon_doc_id,md.vr_number,
           (SELECT min(fishery_code) from marfissci.discard_matchfishery df where md.trip_id = df.trip_id) fishery_code, 
-          so.landing_date_time		                                                                -- DATE LANDED TIME LANDED
+          TO_CHAR(so.landing_date_time, 'YYYY-MM-DD HH24:MI:SS') landing_date_time		                                                                -- DATE LANDED TIME LANDED
           FROM
           marfissci.mon_docs md,	
           marfissci.slip_offld_std_info so 
@@ -167,7 +164,7 @@ LARGE_PELAGICS_LOGS_legacy = function(dsn = "PTRAN 64bit", username=NULL,passwor
           -- ###### Limit the years
           AND extract(year from logs.fv_fished_datetime) > 2002    -- this is everything!"
   
-  results = channel$thecmd(channel$channel, SQL1)
+  results =thecmd(cxn, SQL1)
   
   return(results)
 }
