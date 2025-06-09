@@ -4,22 +4,13 @@
 \alias{BFT_LOGS_legacy}
 \title{BFT_LOGS_legacy}
 \usage{
-BFT_LOGS_legacy(
-  dsn = "PTRAN 64bit",
-  username = NULL,
-  password = NULL,
-  usepkg = "rodbc"
-)
+BFT_LOGS_legacy(cxn = NULL)
 }
 \arguments{
-\item{dsn}{default is \code{'PTRAN 64bit'},  this is a character vector with the DSN name configured on the 
-local computer allowing communication with the MARFIS tables.}
-
-\item{username}{default is \code{NULL}}
-
-\item{password}{default is \code{NULL}}
-
-\item{usepkg}{default is \code{'rodbc'}}
+\item{cxn}{A valid Oracle connection object. This parameter allows you to 
+pass an existing connection, reducing the need to establish a new connection 
+within the function. If provided, it takes precedence over the connection-
+related parameters.}
 }
 \description{
 This function recreates a legacy MARFIS view that was used by the
