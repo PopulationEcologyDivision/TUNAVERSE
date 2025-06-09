@@ -13,11 +13,14 @@
 #' data.
 #' @author  Mike McMahon, \email{Mike.McMahon@@dfo-mpo.gc.ca}
 #' @export
-prepareData <- function(cxn=NULL,force.extract=F){
+prepareData <- function(cxn=NULL,force.extract=F, extract_user = NULL, extract_computer = NULL){
   # if (is.null(data.dir))stop("Please provide a location where the extracted .rdata files can be stored and/or accessed")
   Mar.utils::get_data_tables(schema = "MARFISSCI", cxn = cxn,
                              data.dir=get_pesd_tv_dir(),
-                             tables= allTables, force.extract = force.extract)
+                             tables= allTables, 
+                             force.extract = force.extract,
+                             extract_user = extract_user, 
+                             extract_computer = extract_computer)
   
   rawData <- loadIntoList(allTables,removeOriginals = T)
   rawData <- dropFields(rawData)
