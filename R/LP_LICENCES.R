@@ -1,9 +1,9 @@
 #' @title LP_LICENCES
 #' @description This function loads the specified licence data into the global environment.
-#' @param type  default is \code{"PLL_LICENCES"}.  Valid values include "PLL_LICENCES", "MAR_BFT_LICENCES", "TRAP_LICENCES", "HP_LICENCES".
+#' @param type  default is \code{"PLL_LICENCES"}.  Valid values include "PLL_LICENCES", "MAR_BFT_LICENCES", "BFT_TRAP_LICENCES", "HARP_LICENCES".
 #' this is a one element vector identifying the licence type which is matched against a list.
 #' @param data_path  default is \code{"R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/"}. 
-#' This is the location of the PLL_LICENCES, MAR_BFT_LICENCES, BFT_TRP_LICENCES and HP_LICENCES Rdata files.
+#' This is the location of the PLL_LICENCES, MAR_BFT_LICENCES, BFT_TRAP_LICENCES and HARP_LICENCES Rdata files.
 #' @author  Alex Hanke, \email{Alex.Hanke@@dfo-mpo.gc.ca}
 #' @export
 LP_LICENCES <- function(type="PLL_LICENCES", 
@@ -21,7 +21,7 @@ LP_LICENCES <- function(type="PLL_LICENCES",
     }
     
     # Allowed object names
-    allowed_objects <- c("PLL_LICENCES", "MAR_BFT_LICENCES", "TRAP_LICENCES", "HP_LICENCES")
+    allowed_objects <- c("PLL_LICENCES", "MAR_BFT_LICENCES", "BFT_TRAP_LICENCES", "HARP_LICENCES")
     
     # Check if object_name is valid
     if (!type %in% allowed_objects) {
@@ -31,8 +31,8 @@ LP_LICENCES <- function(type="PLL_LICENCES",
     # Load the data object using load()
     RdataFiles = c("PLL_LICENCES.Rdata",
                "MAR_BFT_LICENCES.Rdata",
-	       "BFT_TRP_LICENCES.Rdata",
-               "HP_LICENCES.Rdata")
+	       "BFT_TRAP_LICENCES.Rdata",
+               "HARP_LICENCES.Rdata")
     
     load(paste0(data_path,
             RdataFiles[match(type,allowed_objects)]),
