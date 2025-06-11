@@ -4,7 +4,12 @@
 \alias{prepareData}
 \title{prepareData}
 \usage{
-prepareData(cxn = NULL, force.extract = F)
+prepareData(
+  cxn = NULL,
+  force.extract = F,
+  extract_user = NULL,
+  extract_computer = NULL
+)
 }
 \arguments{
 \item{cxn}{A valid Oracle connection object. This parameter allows you to 
