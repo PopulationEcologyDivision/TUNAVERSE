@@ -1,5 +1,6 @@
 #' @title LP_LICENCES
 #' @description This function loads the specified licence data into the global environment.
+#' Licence type is a proxy for fleet.
 #' @param type  default is \code{"PLL_LICENCES"}.  Valid values include "PLL_LICENCES", "MAR_BFT_LICENCES", "BFT_TRAP_LICENCES", "HARP_LICENCES".
 #' this is a one element vector identifying the licence type which is matched against a list.
 #' @param data_path  default is \code{"R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/"}. 
