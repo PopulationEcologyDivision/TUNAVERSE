@@ -10,14 +10,15 @@ LP_LICENCES(
 )
 }
 \arguments{
-\item{type}{default is \code{"PLL_LICENCES"}.  Valid values include "PLL_LICENCES", "MAR_BFT_LICENCES", "HP_LICENCES".
+\item{type}{default is \code{"PLL_LICENCES"}.  Valid values include "PLL_LICENCES", "MAR_BFT_LICENCES", "BFT_TRAP_LICENCES", "HARP_LICENCES".
 this is a one element vector identifying the licence type which is matched against a list.}
 
 \item{data_path}{default is \code{"R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/"}. 
-This is the location of the PLL_LICENCES, MAR_BFT_LICENCES and HP_LICENCES Rdata files.}
+This is the location of the PLL_LICENCES, MAR_BFT_LICENCES, BFT_TRAP_LICENCES and HARP_LICENCES Rdata files.}
 }
 \description{
 This function loads the specified licence data into the global environment.
+Licence type is a proxy for fleet.
 }
 \author{
 Alex Hanke, \email{Alex.Hanke@dfo-mpo.gc.ca}
