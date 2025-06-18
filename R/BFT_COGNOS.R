@@ -33,7 +33,7 @@ BFT_COGNOS = function(QAQC=TRUE) {
     GHIST = data.table(readit(.data=paste0(data_path,"Historical_Gulf_Feb 19 2016.xlsx" )))
     attr(GHIST,"comment") = "GHIST"
     
-    rawDATA = list(GULF1, GULF2, GHIST)
+    rawDATA = list(rawGULF1=GULF1, rawGULF2=GULF2, rawGHIST=GHIST)
     attr(rawDATA,"comments") =
       "Raw historical, logbook 1 and logbook 2 BFT fishery data."
     
@@ -752,7 +752,7 @@ BFT_COGNOS = function(QAQC=TRUE) {
     attr(DATA,"comments") = "Port-Day level combined data"
     
     # Return the loaded data
-    allDATA = list(GHIST, GULF1, GULF2, DATA)
+    allDATA = list(GHIST=GHIST, GULF1=GULF1, GULF2=GULF2, DATA=DATA)
     attr(allDATA,"comments") =
     "QAQC data for historical, logbook 1, logbook 2 and port-day level combined data."
     
