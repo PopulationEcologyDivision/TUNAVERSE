@@ -8,7 +8,7 @@
 BFT_LOGS <- function(tblList){
   filterBFT <-function(tblList){
     #simple Filtering - inclusive of all years
-    tblList$MON_DOCS              <- tblList$MON_DOCS[tblList$MON_DOCS$MON_DOC_DEFN_ID %in% c(3,4,5,22, 58),]  #3,4,5,22,
+    tblList$MON_DOCS              <- tblList$MON_DOCS[tblList$MON_DOCS$MON_DOC_DEFN_ID %in% c(3,4,5,22,58),]  #3,4,5,22,
     tblList$LOG_SPC_STD_INFO      <- tblList$LOG_SPC_STD_INFO[tblList$LOG_SPC_STD_INFO$SSF_SPECIES_CODE %in% c(252,253,254,256),]
     tblList$SLIP_SPC_STD_INFO     <- tblList$SLIP_SPC_STD_INFO[tblList$SLIP_SPC_STD_INFO$SSF_SPECIES_CODE %in% c(252,253,254,256),]
     tblList <- autoFilter(tblList)
@@ -83,9 +83,11 @@ BFT_LOGS <- function(tblList){
     dplyr::filter(LANDING_DATE_TIME == max(LANDING_DATE_TIME))
   res<- list()
   LOG <- merge(tblList$MON_DOCS[,c("MON_DOC_ID", "MON_DOC_DEFN_ID", "FV_NAFO_UNIT_AREA_ID", "FV_GEAR_CODE")], 
-               tblList$LOG_EFRT_STD_INFO[,c("MON_DOC_ID", "LOG_EFRT_STD_INFO_ID", "ENT_LATITUDE", "DET_LATITUDE", "ENT_LONGITUDE", "DET_LONGITUDE", "DET_NAFO_UNIT_AREA_ID", "FV_NAFO_UNIT_AREA_ID", "FV_FISHED_DATETIME")], by = "MON_DOC_ID",all.x=T)
+               tblList$LOG_EFRT_STD_INFO[,c("MON_DOC_ID", "LOG_EFRT_STD_INFO_ID", "ENT_LATITUDE", "DET_LATITUDE", "ENT_LONGITUDE", "DET_LONGITUDE", "DET_NAFO_UNIT_AREA_ID", "FV_NAFO_UNIT_AREA_ID", "FV_FISHED_DATETIME","FV_GEAR_CODE")], by = "MON_DOC_ID",all.x=T)
   colnames(LOG)[colnames(LOG)=="FV_NAFO_UNIT_AREA_ID.x"] <- "MD_FV_NAFO_UNIT_AREA_ID"
   colnames(LOG)[colnames(LOG)=="FV_NAFO_UNIT_AREA_ID.y"] <- "LE_FV_NAFO_UNIT_AREA_ID"
+  colnames(LOG)[colnames(LOG)=="FV_GEAR_CODE.x"] <- "GEAR_CODE_TRIP"
+  colnames(LOG)[colnames(LOG)=="FV_GEAR_CODE.y"] <- "GEAR_CODE_SET"
   
   LOG <- merge(LOG, LOG_SPC_STD_INFO_corr[,c("LOG_EFRT_STD_INFO_ID","LOG_SPC_STD_INFO_ID","SSF_LANDED_FORM_CODE_LS","UNIT_OF_MEASURE_ID_LS","WEIGHT_LBS")], all.x=T)
   colnames(LOG)[colnames(LOG)=="MON_DOC_DEFN_ID"] <- "MON_DOC_DEFN_ID_LOG"
@@ -96,12 +98,11 @@ BFT_LOGS <- function(tblList){
   # also, let's settle on single values for each of lat, long, nafo and gear
   LOG <- LOG %>%
     dplyr::mutate(
-      gear_code = FV_GEAR_CODE,
       latitude = dplyr::coalesce(ENT_LATITUDE, DET_LATITUDE),
       longitude = dplyr::coalesce(ENT_LONGITUDE, DET_LONGITUDE),
       NAFO_UNIT_AREA_ID = dplyr::coalesce(dplyr::coalesce(DET_NAFO_UNIT_AREA_ID, LE_FV_NAFO_UNIT_AREA_ID), MD_FV_NAFO_UNIT_AREA_ID)
     ) %>%
-    dplyr::select(-ENT_LATITUDE, -DET_LATITUDE, -ENT_LONGITUDE, -DET_LONGITUDE, -DET_NAFO_UNIT_AREA_ID, -LE_FV_NAFO_UNIT_AREA_ID, -MD_FV_NAFO_UNIT_AREA_ID, -FV_GEAR_CODE)
+    dplyr::select(-ENT_LATITUDE, -DET_LATITUDE, -ENT_LONGITUDE, -DET_LONGITUDE, -DET_NAFO_UNIT_AREA_ID, -LE_FV_NAFO_UNIT_AREA_ID, -MD_FV_NAFO_UNIT_AREA_ID)
 
   TRIP <- merge(unique(tblList$MON_DOCS[,c("MON_DOC_ID","MON_DOC_DEFN_ID","TRIP_ID","VR_NUMBER","FV_GEAR_CODE","FV_NAFO_UNIT_AREA_ID")]), 
                 tblList$MON_DOC_ENTRD_DETS, by="MON_DOC_ID", all.x = T)
@@ -144,10 +145,10 @@ BFT_LOGS <- function(tblList){
 
   results <- merge(TRIP[,c("MON_DOC_ID", "MON_DOC_DEFN_ID_TRIP", "TRIP_ID", "VR_NUMBER", "Home_Mgt_Area", "Date_Sailed","Time_Sailed", 
                            "LANDING_DATE_TIME", "COMMUNITY_CODE", "Trip_Number", "FV_NAFO_UNIT_AREA_ID", "nafo_unit_trip", "Total_Hours_Fished", "Num_Of_Strikes", 
-                           "FV_GEAR_CODE", "Hook_Size", "Num_Of_Lines", "Gauge_Of_Mono", "Bait", "Total_Num_BFT_Caught_Trip", "BFT_dressed_weight_lbs_trip", 
+                           "Hook_Size", "Num_Of_Lines", "Gauge_Of_Mono", "Bait", "Total_Num_BFT_Caught_Trip", "BFT_dressed_weight_lbs_trip", 
                            "BET_dressed_weight_lbs_trip", "YFT_dressed_weight_lbs_trip", "ALB_dressed_weight_lbs_trip")], 
                    LOG[,c("MON_DOC_ID", "LOG_EFRT_STD_INFO_ID", "NAFO_UNIT_AREA_ID", "nafo_unit_log", "log_BFT_Tag_Num", "FV_FISHED_DATETIME", "Capture_Time", "latitude", "longitude", 
                           "flank_length", "flank_length_uom", "dressed_length", "dressed_length_uom", "SSF_LANDED_FORM_CODE_LS", "BFT_LANDED_WEIGHT_LBS", 
-                          "Water_Temp", "Water_Temp_UOM","gear_code")], by= "MON_DOC_ID", all.y = T)  
+                          "Water_Temp", "Water_Temp_UOM","GEAR_CODE_TRIP","GEAR_CODE_SET")], by= "MON_DOC_ID", all.y = T)  
   return(results)
 }
