@@ -3,6 +3,7 @@
 export(BFT_COGNOS)
 export(BFT_LOGS)
 export(BFT_LOGS_legacy)
+export(ExtractDate)
 export(LARGE_PELAGICS_LOGS_legacy)
 export(LP_LICENCES)
 export(autoFilter)
