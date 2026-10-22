@@ -115,6 +115,6 @@ LEFT JOIN MARFISSCI.ssf_factors fac ON fac.ssf_species_code = slips.ssf_species_
 
 MARFISLIPS = thecmd(cxn, SQL2)
 save(MARFISLIPS, file="R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/Large_Pelagics_Slips.Rdata")
-return(results)
+return(MARFISLIPS)
 
 }

@@ -167,5 +167,5 @@ LARGE_PELAGICS_LOGS_legacy = function(cxn=NULL) {
   MARFILOGS = thecmd(cxn, SQL1)
   save(MARFILOGS, file="R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/Large_Pelagics_logs.Rdata")
   
-  return(results)
+  return(MARFILOGS)
 }
