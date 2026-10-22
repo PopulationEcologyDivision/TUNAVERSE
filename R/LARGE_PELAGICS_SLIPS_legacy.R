@@ -8,7 +8,7 @@
 #' "MARLIN WHITE"              "MAHI MAHI (DOLPHIN)"      
 #' "ESCOLAR"                   "PELAGIC, UNSPECIFIED"     
 #' "SHARK, PORBEAGLE/MACKEREL" "SHARK, BLUE"              
-#' "SHARK, MAKO"               "CRAB, PORCUPINE"  
+#' "SHARK, MAKO"                
 #'  The extracted data has most field names in common with the extracted data
 #'  returned by the LARGE_PELAGICS_LOGS_legacy function.
 #' The units of weight are consistently kgs and represent the trip total estimated 
