@@ -164,7 +164,8 @@ LARGE_PELAGICS_LOGS_legacy = function(cxn=NULL) {
           -- ###### Limit the years
           AND extract(year from logs.fv_fished_datetime) > 2002    -- this is everything!"
   
-  results =thecmd(cxn, SQL1)
+  MARFILOGS = thecmd(cxn, SQL1)
+  save(MARFILOGS, file="R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/Large_Pelagics_logs.Rdata")
   
   return(results)
 }
