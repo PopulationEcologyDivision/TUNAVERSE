@@ -24,4 +24,4 @@ Encoding: UTF-8
 License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/PopulationEcologyDivision/TUNAVERSE/
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.0.0

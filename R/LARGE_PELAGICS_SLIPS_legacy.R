@@ -19,7 +19,7 @@
 #' related parameters.
 #' @author  Alex Hanke, \email{Alex.Hanke@@dfo-mpo.gc.ca}
 #' @export
-LARGE_PELAGICS_LOGS_legacy = function(cxn=NULL) {
+LARGE_PELAGICS_SLIPS_legacy = function(cxn=NULL) {
   thecmd <- Mar.utils::connectionCheck(cxn)
   SQL2 = "SELECT
     slips.mon_doc_id,
