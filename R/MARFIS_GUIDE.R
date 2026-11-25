@@ -1,48 +1,29 @@
-#' Open MARFIS Documentation and Reference Guides
-#'
-#' Provides access to bundled reference documents for querying and understanding
-#' the MARFIS Catch & Effort data model in `TUNAVERSE`.
-#'
-#' **Bundled Resources:**
-#' - **MARFIS Catch & Effort User's Guide (`marfis_users_guide.pdf`):** A
-#'   practical SQL/R extraction and query-design guide covering MARFIS table
-#'   hierarchy and grain, standard vs. `*_ENTRD_DETS` detail storage, rules for
-#'   preventing row fan-out, pre-filtering `PRO_SPC_INFO` and detail CTEs, and
-#'   a reference set-and-species query template.
-#' - **Science Description of MARFIS (`marfis_science_description.pdf`):** An
-#'   authoritative system-level reference describing MARFIS functional domains
-#'   (Licencing/Entitlements, Quota, and Catch & Effort), operational trip and
-#'   hail-in/hail-out workflows, Catch & Effort table structure, `FV_` column
-#'   behavior and caveats, and `V_MON_DOC_DEFINTIONS` inspection rules.
-#'
-#' @param doc Character string selecting which guide to open: `"users_guide"`
-#'   (default) for the *MARFIS Catch & Effort User's Guide* or
-#'   `"science_description"` for the *Science Description of MARFIS*.
-#' @return Invisibly returns the file path to the selected PDF document.
-#' @export
 marfis_guide <- function(doc = c("users_guide", "science_description")) {
   doc <- match.arg(doc)
-  filename <- switch(
+  
+  candidates <- switch(
     doc,
-    users_guide = "marfis_users_guide.pdf",
-    science_description = "marfis_science_description.pdf"
+    users_guide = c(
+      "MARFIS Catch & Effort User's Guide.pdf",
+      "marfis_users_guide.pdf"
+    ),
+    science_description = c(
+      "Science Description of MARFIS.pdf",
+      "marfis_science_description.pdf"
+    )
   )
   
-  # Look in the installed top-level TUNAVERSE directory first
-  pdf_path <- system.file(filename, package = "TUNAVERSE")
-  
-  # Optional fallback if running against an uninstalled local source tree
-  if (!nzchar(pdf_path) || !file.exists(pdf_path)) {
-    candidates <- c(
-      file.path("inst", "guides", filename),
-      file.path("inst", filename)
-    )
-    existing <- candidates[file.exists(candidates)]
-    pdf_path <- if (length(existing) > 0) existing[[1]] else ""
+  pdf_path <- ""
+  for (fname in candidates) {
+    p <- system.file(fname, package = "TUNAVERSE")
+    if (nzchar(p) && file.exists(p)) {
+      pdf_path <- p
+      break
+    }
   }
   
-  if (!nzchar(pdf_path) || !file.exists(pdf_path)) {
-    stop("Document `", filename, "` was not found in the TUNAVERSE package.")
+  if (!nzchar(pdf_path)) {
+    stop("Document for `", doc, "` was not found in the TUNAVERSE package.")
   }
   
   if (interactive()) {
