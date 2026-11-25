@@ -27,12 +27,27 @@ marfis_guide <- function(doc = c("users_guide", "science_description")) {
     users_guide = "marfis_users_guide.pdf",
     science_description = "marfis_science_description.pdf"
   )
-  pdf_path <- system.file("guides", filename, package = "TUNAVERSE")
+  
+  # Look in the installed top-level TUNAVERSE directory first
+  pdf_path <- system.file(filename, package = "TUNAVERSE")
+  
+  # Optional fallback if running against an uninstalled local source tree
   if (!nzchar(pdf_path) || !file.exists(pdf_path)) {
-    stop("Document `", filename, "` was not found in the installed TUNAVERSE package.")
+    candidates <- c(
+      file.path("inst", "guides", filename),
+      file.path("inst", filename)
+    )
+    existing <- candidates[file.exists(candidates)]
+    pdf_path <- if (length(existing) > 0) existing[[1]] else ""
   }
+  
+  if (!nzchar(pdf_path) || !file.exists(pdf_path)) {
+    stop("Document `", filename, "` was not found in the TUNAVERSE package.")
+  }
+  
   if (interactive()) {
     utils::browseURL(pdf_path)
   }
+  
   invisible(pdf_path)
 }
