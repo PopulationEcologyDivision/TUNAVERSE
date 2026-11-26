@@ -6,37 +6,38 @@
 \usage{
 LARGE_PELAGICS_LOGS_sci(
   cxn = NULL,
-  min_year = NULL,
-  mondoc_type = c("ALL", "TASK1_fleets"),
-  task1_doc_defns = c(1L, 2L, 3L, 4L, 5L, 6L, 9L, 10L, 14L, 19L, 28L, 29L, 33L, 58L),
+  year = 2003:as.integer(format(Sys.Date(), "\%Y")),
+  objective = c("Reporting", "Science"),
+  mondoc_type = c("TASK1_fleets", "ALL"),
+  task1_doc_defns = c(1L, 2L, 3L, 4L, 5L, 6L, 9L, 29L, 58L),
   save_rdata = TRUE
 )
 }
 \arguments{
-\item{cxn}{A valid Oracle connection object. This parameter allows you to
-pass an existing connection, reducing the need to establish a new connection
-within the function. If provided, it takes precedence over the connection-
-related parameters.}
+\item{cxn}{A valid Oracle connection object. Passed to
+`Mar.utils::connectionCheck()`.}
 
-\item{min_year}{Optional integer minimum fishing year filter applied to
-`COALESCE(LOG_EFRT_STD_INFO.FV_FISHED_DATETIME, SLIP_OFFLD_STD_INFO.LANDING_DATE_TIME)`.
-Defaults to `NULL` (no year filter; use `min_year = 2003` to match legacy
-`extract(year from fv_fished_datetime) > 2002`).}
+\item{year}{Integer vector, single year, sequence, or list of fishing years
+to extract, matched against
+`EXTRACT(YEAR FROM COALESCE(LOG_EFRT_STD_INFO.FV_FISHED_DATETIME, SLIP_OFFLD_STD_INFO.LANDING_DATE_TIME))`.
+Defaults to `2003` through the current calendar year.}
+
+\item{objective}{Character string specifying the extraction objective:
+`"Reporting"` (default) keeps only sets and species records matching the
+reporting species list; `"Science"` retains all qualifying sets and catch
+rows.}
 
 \item{mondoc_type}{Character string specifying which monitoring document
-definitions to extract. `"ALL"` (default) includes all document definitions
-(`MON_DOC_DEFN_ID > 0`); `"TASK1_fleets"` restricts extraction to
-`task1_doc_defns` (`1, 2, 3, 4, 5, 6, 9, 10, 14, 19, 28, 29, 33, 58`).}
+definitions to extract. `"TASK1_fleets"` (default) restricts extraction to
+`task1_doc_defns`; `"ALL"` includes all document definitions
+(`MON_DOC_DEFN_ID > 0`).}
 
 \item{task1_doc_defns}{Integer vector of `MON_DOC_DEFN_ID` values used when
 `mondoc_type = "TASK1_fleets"`. Defaults to
-`c(1L, 2L, 3L, 4L, 5L, 6L, 9L, 10L, 14L, 19L, 28L, 29L, 33L, 58L)`.}
+`c(1L, 2L, 3L, 4L, 5L, 6L, 9L, 29L, 58L)`.}
 
 \item{save_rdata}{Logical; if `TRUE` (default), saves `LPL` to
-`R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/Large_Pelagics_logs_sci_<mondoc_type>_<min_year>.Rdata`
-(e.g., `Large_Pelagics_logs_sci_ALL_all_years.Rdata` when `min_year = NULL`,
-or `Large_Pelagics_logs_sci_TASK1_fleets_from_2003.Rdata` when
-`min_year = 2003`).}
+`R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/Large_Pelagics_logs_sci_<objective>_<mondoc_type>_<min_year>_to_<max_year>.Rdata`.}
 }
 \value{
 A `data.frame` of set-and-species fishing records from `MARFISSCI`.
@@ -44,10 +45,9 @@ A `data.frame` of set-and-species fishing records from `MARFISSCI`.
 \description{
 Extracts MARFISSCI large pelagics and pelagic/groundfish fishing data
 at the set-and-species level of resolution (`LOG_EFRT_STD_INFO_ID` and species
-per `TRIP_ID`), returning round/reported weights, effort, spatial, timing,
-gear/rigging, catch usage, landed form, target species, tag IDs, logbook
-document definition ID, coalesced detail fields across the specified
-`COLUMN_DEFN_ID`s, and multi-source fields suffixed by data origin.
+per `TRIP_ID`), supporting both `"Reporting"` (filtered to reporting species
+and sets containing them) and `"Science"` (retaining all qualifying sets and
+species/non-target rows) workflows.
 }
 \author{
 Alex Hanke, \email{Alex.Hanke@dfo-mpo.gc.ca}

@@ -1,43 +1,61 @@
 #' @title LARGE_PELAGICS_LOGS_sci
 #' @description Extracts MARFISSCI large pelagics and pelagic/groundfish fishing data
 #' at the set-and-species level of resolution (`LOG_EFRT_STD_INFO_ID` and species
-#' per `TRIP_ID`), returning round/reported weights, effort, spatial, timing,
-#' gear/rigging, catch usage, landed form, target species, tag IDs, logbook
-#' document definition ID, coalesced detail fields across the specified
-#' `COLUMN_DEFN_ID`s, and multi-source fields suffixed by data origin.
-#' @param cxn A valid Oracle connection object. This parameter allows you to
-#' pass an existing connection, reducing the need to establish a new connection
-#' within the function. If provided, it takes precedence over the connection-
-#' related parameters.
-#' @param min_year Optional integer minimum fishing year filter applied to
-#' `COALESCE(LOG_EFRT_STD_INFO.FV_FISHED_DATETIME, SLIP_OFFLD_STD_INFO.LANDING_DATE_TIME)`.
-#' Defaults to `NULL` (no year filter; use `min_year = 2003` to match legacy
-#' `extract(year from fv_fished_datetime) > 2002`).
+#' per `TRIP_ID`), supporting both `"Reporting"` (filtered to reporting species
+#' and sets containing them) and `"Science"` (retaining all qualifying sets and
+#' species/non-target rows) workflows.
+#' @param cxn A valid Oracle connection object. Passed to
+#' `Mar.utils::connectionCheck()`.
+#' @param year Integer vector, single year, sequence, or list of fishing years
+#' to extract, matched against
+#' `EXTRACT(YEAR FROM COALESCE(LOG_EFRT_STD_INFO.FV_FISHED_DATETIME, SLIP_OFFLD_STD_INFO.LANDING_DATE_TIME))`.
+#' Defaults to `2003` through the current calendar year.
+#' @param objective Character string specifying the extraction objective:
+#' `"Reporting"` (default) keeps only sets and species records matching the
+#' reporting species list; `"Science"` retains all qualifying sets and catch
+#' rows.
 #' @param mondoc_type Character string specifying which monitoring document
-#' definitions to extract. `"ALL"` (default) includes all document definitions
-#' (`MON_DOC_DEFN_ID > 0`); `"TASK1_fleets"` restricts extraction to
-#' `task1_doc_defns` (`1, 2, 3, 4, 5, 6, 9, 10, 14, 19, 28, 29, 33, 58`).
+#' definitions to extract. `"TASK1_fleets"` (default) restricts extraction to
+#' `task1_doc_defns`; `"ALL"` includes all document definitions
+#' (`MON_DOC_DEFN_ID > 0`).
 #' @param task1_doc_defns Integer vector of `MON_DOC_DEFN_ID` values used when
 #' `mondoc_type = "TASK1_fleets"`. Defaults to
-#' `c(1L, 2L, 3L, 4L, 5L, 6L, 9L, 10L, 14L, 19L, 28L, 29L, 33L, 58L)`.
+#' `c(1L, 2L, 3L, 4L, 5L, 6L, 9L, 29L, 58L)`.
 #' @param save_rdata Logical; if `TRUE` (default), saves `LPL` to
-#' `R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/Large_Pelagics_logs_sci_<mondoc_type>_<min_year>.Rdata`
-#' (e.g., `Large_Pelagics_logs_sci_ALL_all_years.Rdata` when `min_year = NULL`,
-#' or `Large_Pelagics_logs_sci_TASK1_fleets_from_2003.Rdata` when
-#' `min_year = 2003`).
+#' `R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data/Large_Pelagics_logs_sci_<objective>_<mondoc_type>_<min_year>_to_<max_year>.Rdata`.
 #' @return A `data.frame` of set-and-species fishing records from `MARFISSCI`.
 #' @author Alex Hanke, \email{Alex.Hanke@@dfo-mpo.gc.ca}
 #' @export
 LARGE_PELAGICS_LOGS_sci <- function(cxn = NULL,
-                                    min_year = NULL,
-                                    mondoc_type = c("ALL", "TASK1_fleets"),
+                                    year = 2003:as.integer(format(Sys.Date(), "%Y")),
+                                    objective = c("Reporting", "Science"),
+                                    mondoc_type = c("TASK1_fleets", "ALL"),
                                     task1_doc_defns = c(
                                       1L, 2L, 3L, 4L, 5L, 6L, 9L,
-                                      10L, 14L, 19L, 28L, 29L, 33L, 58L
+                                      29L, 58L
                                     ),
                                     save_rdata = TRUE) {
   thecmd <- Mar.utils::connectionCheck(cxn)
+  objective <- match.arg(objective)
   mondoc_type <- match.arg(mondoc_type)
+  
+  yr_vec <- sort(unique(as.integer(unlist(year, use.names = FALSE))))
+  yr_vec <- yr_vec[!is.na(yr_vec)]
+  if (length(yr_vec) == 0L) {
+    stop("`year` must contain at least one valid integer year.")
+  }
+  yr_sql <- paste(yr_vec, collapse = ", ")
+  year_filter <- paste0(
+    " AND EXTRACT(YEAR FROM COALESCE(le.fv_fished_datetime, sld.date_landed_slip)) IN (",
+    yr_sql,
+    ")"
+  )
+  
+  report_species <- c(
+    251L, 252L, 253L, 254L, 256L, 261L, 262L, 263L, 270L, 299L,
+    369L, 372L, 375L, 29L, 778L, 830L, 710L, 730L, 399L, 189L, 225L
+  )
+  rep_sp_sql <- paste(unique(report_species), collapse = ", ")
   
   doc_defn_filter <- "WHERE md.mon_doc_defn_id > 0"
   if (identical(mondoc_type, "TASK1_fleets")) {
@@ -48,12 +66,69 @@ LARGE_PELAGICS_LOGS_sci <- function(cxn = NULL,
     doc_defn_filter <- paste0("WHERE md.mon_doc_defn_id IN (", defns_sql, ")")
   }
   
-  year_filter <- ""
-  if (!is.null(min_year)) {
-    year_filter <- paste0(
-      " AND EXTRACT(YEAR FROM COALESCE(le.fv_fished_datetime, sld.date_landed_slip)) >= ",
-      as.integer(min_year)
-    )
+  if (identical(objective, "Reporting")) {
+    qualifying_sets_cte <- paste0("
+      qualifying_sets AS (
+        SELECT DISTINCT
+          md.mon_doc_id,
+          md.trip_id,
+          le.log_efrt_std_info_id
+        FROM marfissci.mon_docs md
+        JOIN marfissci.log_efrt_std_info le
+          ON md.mon_doc_id = le.mon_doc_id
+        JOIN marfissci.log_spc_std_info ls_filt
+          ON le.log_efrt_std_info_id = ls_filt.log_efrt_std_info_id
+        LEFT JOIN slip_landing_dates sld
+          ON md.mon_doc_id = sld.mon_doc_id
+        ", doc_defn_filter,
+                                  year_filter,
+                                  "
+          AND ls_filt.ssf_species_code IN (", rep_sp_sql, ")
+      )
+    ")
+    spc_join_sql <- paste0("
+      JOIN marfissci.log_spc_std_info ls
+        ON le.log_efrt_std_info_id = ls.log_efrt_std_info_id
+       AND ls.ssf_species_code IN (", rep_sp_sql, ")
+    ")
+    qualifying_spc_cte <- paste0("
+      qualifying_spc AS (
+        SELECT DISTINCT ls.log_spc_std_info_id
+        FROM qualifying_sets qs
+        JOIN marfissci.log_spc_std_info ls
+          ON qs.log_efrt_std_info_id = ls.log_efrt_std_info_id
+         AND ls.ssf_species_code IN (", rep_sp_sql, ")
+      )
+    ")
+  } else {
+    qualifying_sets_cte <- paste0("
+      qualifying_sets AS (
+        SELECT DISTINCT
+          md.mon_doc_id,
+          md.trip_id,
+          le.log_efrt_std_info_id
+        FROM marfissci.mon_docs md
+        JOIN marfissci.log_efrt_std_info le
+          ON md.mon_doc_id = le.mon_doc_id
+        LEFT JOIN slip_landing_dates sld
+          ON md.mon_doc_id = sld.mon_doc_id
+        ", doc_defn_filter,
+                                  year_filter,
+                                  "
+      )
+    ")
+    spc_join_sql <- "
+      LEFT JOIN marfissci.log_spc_std_info ls
+        ON le.log_efrt_std_info_id = ls.log_efrt_std_info_id
+    "
+    qualifying_spc_cte <- "
+      qualifying_spc AS (
+        SELECT DISTINCT ls.log_spc_std_info_id
+        FROM qualifying_sets qs
+        JOIN marfissci.log_spc_std_info ls
+          ON qs.log_efrt_std_info_id = ls.log_efrt_std_info_id
+      )
+    "
   }
   
   all_det_ids <- c(
@@ -76,20 +151,7 @@ LARGE_PELAGICS_LOGS_sci <- function(cxn = NULL,
       FROM marfissci.slip_offld_std_info
       GROUP BY mon_doc_id
     ),
-    qualifying_sets AS (
-      SELECT DISTINCT
-        md.mon_doc_id,
-        md.trip_id,
-        le.log_efrt_std_info_id
-      FROM marfissci.mon_docs md
-      JOIN marfissci.log_efrt_std_info le
-        ON md.mon_doc_id = le.mon_doc_id
-      LEFT JOIN slip_landing_dates sld
-        ON md.mon_doc_id = sld.mon_doc_id
-      ", doc_defn_filter,
-                      year_filter,
-                      "
-    ),
+    ", qualifying_sets_cte, ",
     qualifying_mon_docs AS (
       SELECT DISTINCT mon_doc_id
       FROM qualifying_sets
@@ -99,12 +161,7 @@ LARGE_PELAGICS_LOGS_sci <- function(cxn = NULL,
       FROM qualifying_sets
       WHERE trip_id IS NOT NULL
     ),
-    qualifying_spc AS (
-      SELECT DISTINCT ls.log_spc_std_info_id
-      FROM qualifying_sets qs
-      JOIN marfissci.log_spc_std_info ls
-        ON qs.log_efrt_std_info_id = ls.log_efrt_std_info_id
-    ),
+    ", qualifying_spc_cte, ",
     vessels_lookup AS (
       SELECT
         vr_number,
@@ -643,8 +700,7 @@ LARGE_PELAGICS_LOGS_sci <- function(cxn = NULL,
     FROM marfissci.mon_docs md
     JOIN marfissci.log_efrt_std_info le
       ON md.mon_doc_id = le.mon_doc_id
-    LEFT JOIN marfissci.log_spc_std_info ls
-      ON le.log_efrt_std_info_id = ls.log_efrt_std_info_id
+    ", spc_join_sql, "
     LEFT JOIN pro_set_species pro
       ON le.log_efrt_std_info_id = pro.log_efrt_std_info_id
      AND ls.ssf_species_code = pro.species_code
@@ -696,11 +752,11 @@ LARGE_PELAGICS_LOGS_sci <- function(cxn = NULL,
   LPL <- thecmd(cxn, sql_query)
   
   if (isTRUE(save_rdata)) {
-    year_tag <- if (is.null(min_year)) "all_years" else paste0("from_", as.integer(min_year))
+    year_tag <- paste0(min(yr_vec), "_to_", max(yr_vec))
     scope_tag <- if (identical(mondoc_type, "ALL")) "ALL" else "TASK1_fleets"
     out_file <- file.path(
       "R:/ATLSiteShares/SABS/LargePelagics/COMMERCIAL DATA/TUNAVERSE/data",
-      paste0("Large_Pelagics_logs_sci_", scope_tag, "_", year_tag, ".Rdata")
+      paste0("Large_Pelagics_logs_sci_", objective, "_", scope_tag, "_", year_tag, ".Rdata")
     )
     save(LPL, file = out_file)
   }
